@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>越南语-语法-排序练习</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding-bottom: 300px;
+            background-color: #f7fbf3;
+        }
+        
+        #gameContainer {
+            min-height: calc(100vh - 150px);
+        }
+        
+        #infoBox {
+            width: 95%; 
+            max-width: 700px;
+            min-height: 100px; 
+            margin: 0 auto; 
+            border: 2px solid #72a9db; /*041b31 1f4263*/
+            background: #63a0d8; /*ecf2e4 fefefc 63a0d8 */
+            color: #ffffff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: clamp(40px, 5vw, 60px);
+            font-weight: bold;
+        }
+        
+        #contactBox, #instructionBox {
+            width: 90%;
+            max-width: 700px;
+            min-height: 25px;
+            margin: 0px auto;
+            border: 2px solid #72a9db;
+            background: #63a0d8;
+            color: #ffd300;
+            padding-left: 20px;
+            display: flex;
+            align-items: center;
+            font-size: clamp(16px, 2vw, 20px);
+            font-weight: bold;
+        }
+        
+        #instructionBox {
+            color: #f7e19c;
+        }
+
+        #indicator, #indicator2 {
+            width: 90%;
+            max-width: 700px;
+            min-height: 70px;
+            margin: 15px auto;
+            padding: 15px;
+            border: 3px solid #fed16a;
+            background: #ffffe0;
+            border-radius: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: bold;
+        }
+        
+        #indicator2 {
+            background: #fffbef;
+            border: 3px solid #ccc;
+            min-height: 90px;
+            transition: all .4s;
+        }
+        
+        #indicator2.correct {
+            background: #B7D7AA !important;
+            border-color: #5ba346;
+        }
+        
+        #indicator2.wrong {
+            background: #ffcccc !important;
+            border-color: #CE6D5E;
+        }
+
+        .word-btn {
+            padding: 10px 20px;
+            background: #fff;
+            border: 2px solid #63a0d8;
+            border-radius: 12px;
+            font-size: clamp(32px, 5vw, 48px);
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 3px 6px rgba(0,0,0,.15);
+            transition: all .2s;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .word-btn.used {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+        
+        .word-btn-in-answer {
+            background: #ffd700 !important;
+            animation: pop .3s;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(0.8); }
+            100% { transform: scale(1); }
+        }
+
+        #optionsPool {
+            width: 95%;
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        #controls {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 800px;
+            background: #f7fbf3;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        
+        button {
+            padding: 8px 12px;
+            margin: 2px 3px;
+            cursor: pointer;
+            border: 2px solid #63a0d8;
+            background: #63a0d8;
+            color: #fffbef;
+            font-size: 28px;
+            border-radius: 5px;
+        }
+        
+        .active-mode {
+            border: 2px solid #fed16a;
+        }
+        
+        .disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        #results, #score {
+            width: 95%;
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 28px;
+            display: none;
+        }
+        
+        #results {
+            border: 2px solid #734A2E;
+            background: #fffbef;
+        }
+        
+        #score {
+            color: #FF6820;
+            background: #fffbef;
+            border: 2px solid #FF6820;
+        }
+                #sentenceNumber {
+                        width: 70px;
+                        height: 30px;
+                        text-align: center;
+                        font-size: 20px;
+                        border: 2px solid #63a0d8;
+                        border-radius: 5px;
+                        margin: 0 5px;
+                }
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 220px;
+            }
+            
+            button {
+                font-size: 20px;
+            }
+            
+            .word-btn {
+                font-size: 28px;
+                padding: 8px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="infoBox">习得越南语<br>语法 - 排序练习</div>
+        <div id="contactBox">讲师-阮玉煌 | Weixin：XiDeYueNanYu</div>
+        <div id="instructionBox">把词语按正确顺序排列 </div>
+
+        <div id="indicator"></div>
+        <div id="indicator2"></div>
+        <div id="optionsPool"></div>
+
+        <div id="results"></div>
+        <div id="score">0/0</div>
+    </div>
+
+    <div id="controls">
+        <div>
+            <button id="freeModeBtn" class="active-mode">自由模式</button>
+            <button id="testModeBtn">作业模式</button>
+        </div>
+        <div>
+            <button id="autoContinueBtn">自动继续</button>
+            <button id="showHideBtn">显示-隐藏</button>
+        </div>
+        <div>
+            <button id="prevBtn">◀</button>
+            <input type="text" id="sentenceNumber" inputmode="numeric">
+            <button id="nextBtn">▶</button>
+            <button id="replayBtn">再听一遍</button>
+        </div>
+    </div>
+
+    <audio id="mainAudio"></audio>
+    <audio id="correctAudio" src="Dung.mp3"></audio>
+    <audio id="wrongAudio" src="Sai.mp3"></audio>
+
+    <script>
+
+const sentences = [
+    {
+        "audioFile": "audio.mp3",
+        "start": 0.248917,
+        "end": 1.888917,
+        "correctAnswer": "【Cậu】【ấy】【đang】【làm】【gì】?",
+        "translation": "他正在做什么？",
+        "options": [
+            "Cậu ẩy đang làm gì?",
+            "Cậu ấy đang lằm gì?",
+            "Cẩu ấy đang làm gì?",
+            "Cậu ấy đang làm gì?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 2.618917,
+        "end": 4.268917,
+        "correctAnswer": "【Cậu】【ấy】【đang】【chơi】【game】.",
+        "translation": "他正在玩游戏。",
+        "options": [
+            "Cậu ấy đang chơi gam.",
+            "Cậu ấy đang chời game.",
+            "Cậu ẩy đang chơi game.",
+            "Cậu ấy đang chơi game."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 5.348917,
+        "end": 6.888917,
+        "correctAnswer": "【Anh】【ấy】【làm】【gì】【đấy】?",
+        "translation": "他在做什么呢？",
+        "options": [
+            "Anh ấy làm gì đáy?",
+            "Anh ấy làm dì đấy?",
+            "Ánh ấy làm gì đấy?",
+            "Anh ấy làm gì đấy?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 7.478917,
+        "end": 9.178917,
+        "correctAnswer": "【Anh】【ấy】【đang】【câu】【cá】.",
+        "translation": "他正在钓鱼。",
+        "options": [
+            "Anh ấy đang câu gá.",
+            "Anh ấy đang câu cả.",
+            "Anh ẩy đang câu cá.",
+            "Anh ấy đang câu cá."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 10.168917,
+        "end": 11.308917,
+        "correctAnswer": "【Em】【làm】【gì】【đấy】?",
+        "translation": "你在做什么呢？",
+        "options": [
+            "Em làm gì đáy?",
+            "Em làm gì đấy?",
+            "Em làm dì đấy?",
+            "Em lằm gì đấy?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 11.888917,
+        "end": 13.388917,
+        "correctAnswer": "【Em】【đang】【đi】【xe】【đạp】.",
+        "translation": "我正在骑自行车。",
+        "options": [
+            "Em đang đi se đạp.",
+            "Em đang đi xe đạp.",
+            "Em đang đi xê đạp.",
+            "Em đang đi xe đap."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 14.268917,
+        "end": 15.948917,
+        "correctAnswer": "【Chị】【ấy】【đang】【làm】【gì】?",
+        "translation": "(阿)姐正在做什么？",
+        "options": [
+            "Chị ấy đang làm gí?",
+            "Chị ấy đang lằm gì?",
+            "Chị ẩy đang làm gì?",
+            "Chị ấy đang làm gì?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 16.628917,
+        "end": 18.198917,
+        "correctAnswer": "【Chị】【ấy】【đang】【nghe】【nhạc】.",
+        "translation": "(阿)姐正在听音乐。",
+        "options": [
+            "Chị ấy đang nghê nhạc.",
+            "Chị ấy đang nghe nhác.",
+            "Chị ấy đang nghe nhạc.",
+            "Chị ấy đang nge nhạc."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 19.328917,
+        "end": 21.138917,
+        "correctAnswer": "【Bà】【ấy】【đang】【làm】【gì】【đấy】?",
+        "translation": "(阿)奶奶正在做什么呢？",
+        "options": [
+            "Bà ấy đang làm gì đáy?",
+            "Bà ẩy đang làm gì đấy?",
+            "Bà ấy đang lằm gì đấy?",
+            "Bà ấy đang làm gì đấy?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 21.708917,
+        "end": 23.978917,
+        "correctAnswer": "【Bà】【ấy】【đang】【nói】【chuyện】【ở】【hành】【lang】.",
+        "translation": "(阿)奶奶正在走廊上说话。",
+        "options": [
+            "Bà ấy đang nói chuyện ở hành lăng.",
+            "Bà ấy đang nói truyện ở hành lang.",
+            "Bà ấy đang nói chuyện ở hành lang.",
+            "Bà ẩy đang nói chuyện ở hành lang."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 24.938917,
+        "end": 26.638917,
+        "correctAnswer": "【Ông】【ấy】【đang】【làm】【gì】?",
+        "translation": "(阿)爷爷正在做什么？",
+        "options": [
+            "Ông ấy đang làm gí?",
+            "Ông ấy đang lằm gì?",
+            "Ông ẩy đang làm gì?",
+            "Ông ấy đang làm gì?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 27.438917,
+        "end": 29.878917,
+        "correctAnswer": "【Ông】【ấy】【đang】【đọc】【sách】【tại】【thư】【phòng】.",
+        "translation": "(阿)爷爷正在书房看书。",
+        "options": [
+            "Ông ấy đang đọc sách tại thư phòng.",
+            "Ông ấy đang đọc sác tại thư phòng.",
+            "Ông ấy đang dọc sách tại thư phòng.",
+            "Ông ẩy đang đọc sách tại thư phòng."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 31.028917,
+        "end": 32.398917,
+        "correctAnswer": "【Bạn】【đang】【ở】【đâu】?",
+        "translation": "你在哪里？",
+        "options": [
+            "Bạn đang ở dâu?",
+            "Bạn đang ỏ đâu?",
+            "Bạn đang ở đâu?",
+            "Bản đang ở đâu?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 32.918917,
+        "end": 34.918917,
+        "correctAnswer": "【Mình】【đang】【nấu】【ăn】【ở】【nhà】【bếp】.",
+        "translation": "我正在厨房做饭。",
+        "options": [
+            "Mình đang nấu ăn ở nhá bếp.",
+            "Mình đang nấu ăn ỏ nhà bếp.",
+            "Mình đang nấu ăn ở nhà bếp.",
+            "Mình đang nấu ăn ở nhà bét."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 36.358917,
+        "end": 37.918917,
+        "correctAnswer": "【Anh】【ấy】【đang】【ở】【đâu】?",
+        "translation": "他现在在哪儿？",
+        "options": [
+            "Anh ấy đang ở đau?",
+            "Ánh ấy đang ở đâu?",
+            "Anh ấy đang ở đâu?",
+            "Anh ấy đạng ở đâu?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 38.528917,
+        "end": 41.328917,
+        "correctAnswer": "【Anh】【ấy】【đang】【xem】【đá】【bóng】【tại】【văn】【phòng】.",
+        "translation": "他正在办公室看足球。",
+        "options": [
+            "Anh ấy đang xem đã bóng tại văn phòng.",
+            "Anh ấy đang xem đá bóng tại văn phòng.",
+            "Anh ấy đang xem đá bóng tại văng phòng.",
+            "Anh ẩy đang xem đá bóng tại văn phòng."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 42.478917,
+        "end": 44.058917,
+        "correctAnswer": "【Trên】【bàn】【có】【gì】?",
+        "translation": "桌子上有什么？",
+        "options": [
+            "Trên bàn có dì?",
+            "Trên bàng có gì?",
+            "Trên bàn có gì?",
+            "Trên bàn cố gì?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 44.668917,
+        "end": 46.808917,
+        "correctAnswer": "【Trên】【bàn】【có】【sách】【và】【bút】.",
+        "translation": "桌子上有书和笔。",
+        "options": [
+            "Trên bàn có sách và bút.",
+            "Trên bàn có sác và bút.",
+            "Trên bàn có sách và bụt.",
+            "Trên bàng có sách và bút."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 47.608917,
+        "end": 49.198917,
+        "correctAnswer": "【Dưới】【bàn】【có】【gì】?",
+        "translation": "桌子下面有什么？",
+        "options": [
+            "Dưới bàn có dì?",
+            "Dưới bàn có gì?",
+            "Dưới bàng có gì?",
+            "Dưới bàn cố gì?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 49.878917,
+        "end": 51.788917,
+        "correctAnswer": "【Dưới】【bàn】【có】【con】【mèo】.",
+        "translation": "桌子下面有一只猫。",
+        "options": [
+            "Dưới bàn có con méo.",
+            "Dưới bàn có con mèo.",
+            "Dưới bàn có côn mèo.",
+            "Dưới bàng có con mèo."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 52.948917,
+        "end": 54.858917,
+        "correctAnswer": "【Trong】【cặp】【của】【bạn】【có】【gì】?",
+        "translation": "你书包里有什么？",
+        "options": [
+            "Trong cặp của bạn cố gì?",
+            "Trong cặp của bản có gì?",
+            "Trong cặp của bạn có dì?",
+            "Trong cặp của bạn có gì?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 55.638917,
+        "end": 57.988917,
+        "correctAnswer": "【Trong】【cặp】【tôi】【có】【sách】【và】【bút】.",
+        "translation": "我的书包里有书和笔。",
+        "options": [
+            "Trong cặp tôi có sác và bút.",
+            "Trong cặp tôi có sách và bụt.",
+            "Trong cặp tôi có sách và bút.",
+            "Trong cặp tôi cố sách và bút."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 59.188917,
+        "end": 60.728917,
+        "correctAnswer": "【Trong】【phòng】【có】【ai】?",
+        "translation": "房间里有人吗？",
+        "options": [
+            "Trong phồng có ai?",
+            "Trong phòng có ái?",
+            "Trong phòng có ai?",
+            "Trong phòng có ãi?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 61.418917,
+        "end": 63.078917,
+        "correctAnswer": "【Trong】【phòng】【không】【có】【ai】.",
+        "translation": "房间里没有人。",
+        "options": [
+            "Trong phòng không có ãi.",
+            "Trong phòng không có ai.",
+            "Trong phòng khong có ai.",
+            "Trong phồng không có ai."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 64.208917,
+        "end": 66.358917,
+        "correctAnswer": "【Ngoài】【đường】【có】【xe】【máy】【không】?",
+        "translation": "外面有摩托车吗？",
+        "options": [
+            "Ngoài đường có xê máy không?",
+            "Ngoài đường có xe mái không?",
+            "Ngoài đường có xe máy không?",
+            "Ngoài đường có xe mảy không?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 67.338917,
+        "end": 70.488917,
+        "correctAnswer": "【Có】, 【ngoài】【đường】【có】【rất】【nhiều】【xe】【máy】.",
+        "translation": "有，外面有很多摩托车。",
+        "options": [
+            "Có, ngoài đường có rấc nhiều xe máy.",
+            "Có, ngoài đường có rất nhiều xê máy.",
+            "Có, ngoài đường có rất nhiều xe máy.",
+            "Có, ngoài đường có rất nhiểu xe máy."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 71.338917,
+        "end": 72.938917,
+        "correctAnswer": "【Ai】【đứng】【trước】【bạn】【đấy】?",
+        "translation": "谁站在你前面呢？",
+        "options": [
+            "Ai đứng trướt bạn đấy?",
+            "Ai đứng trước bạn đấy?",
+            "Ai đứng trước bạn đáy?",
+            "Ai đứng chuớc bạn đấy?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 73.638917,
+        "end": 75.418917,
+        "correctAnswer": "【Anh】【Ba】【đứng】【trước】【tôi】.",
+        "translation": "(阿)三哥站在我前面。",
+        "options": [
+            "Anh Ba đứng trước tôi.",
+            "Anh Ba đứng chuớc tôi.",
+            "Anh Ba đứng trướt tôi.",
+            "Ánh Ba đứng trước tôi."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 76.098917,
+        "end": 78.088917,
+        "correctAnswer": "【Chị】【Ly】【đứng】【sau】【tôi】.",
+        "translation": "(阿)丽姐站在我后面。",
+        "options": [
+            "Chị Ly đứng sầu tôi.",
+            "Chị Ly đứng sau tôi.",
+            "Chị Ly đứng xau tôi.",
+            "Chị Ly đứng xâu tôi."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 78.998917,
+        "end": 81.078917,
+        "correctAnswer": "【Ông】【Tú】【đứng】【cạnh】【tôi】.",
+        "translation": "(阿)祖叔站在我旁边。",
+        "options": [
+            "Ông Tú đứng cạnh tôi.",
+            "Ông Tú đứng kạnh tôi.",
+            "Ông Tú đứng cạnh tui.",
+            "Ông Tũ đứng cạnh tôi."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 82.088917,
+        "end": 84.638917,
+        "correctAnswer": "【Tôi】【đứng】【giữa】【Ông】【Tú】【và】【bà】【Sa】.",
+        "translation": "我站在(阿)祖叔和(阿)莎奶奶的中间。",
+        "options": [
+            "Tôi đứng giữa Ông Tú và bà Sa.",
+            "Tôi đứng giứa Ông Tú và bà Sa.",
+            "Tôi đứng giữa Ông Tú và bà Xa.",
+            "Tôi đứng giữa Ông Tũ và bà Sa."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 85.968917,
+        "end": 87.318917,
+        "correctAnswer": "【Cô】【ấy】【đẹp】【nhỉ】?",
+        "translation": "她很漂亮，对吧？",
+        "options": [
+            "Cô ấy đẹp nhỉ?",
+            "Cô ấy đẹp nhỉ.",
+            "Cô ấy đep nhỉ?",
+            "Cô ẩy đẹp nhỉ?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 87.958917,
+        "end": 89.878917,
+        "correctAnswer": "【Ừ】, 【cô】【ấy】【rất】【đẹp】.",
+        "translation": "嗯，她非常漂亮。",
+        "options": [
+            "Ừ, cô ấy rất đep.",
+            "Ừ, cô ấy rất đẹp.",
+            "Ừ, cô ấy rấc đẹp.",
+            "Ừ, cô ẩy rất đẹp."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 90.668917,
+        "end": 92.238917,
+        "correctAnswer": "【Anh】【ấy】【nóng】【tính】【nhỉ】?",
+        "translation": "他脾气很急，对吧？",
+        "options": [
+            "Ánh ấy nóng tính nhỉ?",
+            "Anh ấy nóng tĩnh nhỉ?",
+            "Anh ấy nóng tính nhỉ?",
+            "Anh ấy nống tính nhỉ?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 92.778917,
+        "end": 95.318917,
+        "correctAnswer": "【Đúng】, 【anh】【ấy】【rất】【nóng】【tính】.",
+        "translation": "对，他非常急性子。",
+        "options": [
+            "Đúng, anh ấy rất nóng tính.",
+            "Đúng, anh ấy rất nống tính.",
+            "Đúng, anh ấy rất nóng tĩnh.",
+            "Đúng, ánh ấy rất nóng tính."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 95.988917,
+        "end": 97.298917,
+        "correctAnswer": "【Trời】【nóng】【nhỉ】?",
+        "translation": "天气热，对吧？",
+        "options": [
+            "Trời nóng nhỉ?",
+            "Trời nóng nhị?",
+            "Trời núng nhỉ?",
+            "Trời núng nhị?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 97.998917,
+        "end": 100.038917,
+        "correctAnswer": "【Ừ】, 【trời】【nóng】【quá】.",
+        "translation": "嗯，天气太热了。",
+        "options": [
+            "Ừ, trời nóng quá.",
+            "Ừ, trời nóng quã.",
+            "Ừ, trời nống quá.",
+            "Ừ, trồi nóng quá."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 100.798917,
+        "end": 102.298917,
+        "correctAnswer": "【Trong】【xe】【có】【ai】?",
+        "translation": "车里有人吗？",
+        "options": [
+            "Trong xe có ái?",
+            "Trong xe có ai?",
+            "Trong xê có ai?",
+            "Trong xe cố ai?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 103.008917,
+        "end": 104.758917,
+        "correctAnswer": "【Trong】【cặp】【có】【cái】【gì】?",
+        "translation": "书包里有什么东西？",
+        "options": [
+            "Trong cặp có cái gì?",
+            "Trong cặp có cái gí?",
+            "Trong cặp có cãi gì?",
+            "Trong cạp có cái gì?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 105.398917,
+        "end": 107.588917,
+        "correctAnswer": "【Trong】【cốp】【xe】【có】【con】【gì】?",
+        "translation": "后备箱里有动物吗？",
+        "options": [
+            "Trong cốp xe có côn gì?",
+            "Trong cốp xe có con gì?",
+            "Trong cốp xê có con gì?",
+            "Trong cốp xe có con gí?"
+        ]
+    }
+];
+
+        let currentIndex = 0;
+        let isFreeMode = true;
+        let autoContinue = false;
+        let showTranslation = true;
+        let correctCount = 0;
+        let userAnswers = [];
+        let selectedWords = [];
+        let isChecking = false;
+        let isAudioPlaying = false;
+
+        const audio = document.getElementById('mainAudio');
+        const correctAudio = document.getElementById('correctAudio');
+        const wrongAudio = document.getElementById('wrongAudio');
+        const indicator = document.getElementById('indicator');
+        const indicator2 = document.getElementById('indicator2');
+        const optionsPool = document.getElementById('optionsPool');
+        const sentenceNumber = document.getElementById('sentenceNumber');
+        const scoreDisplay = document.getElementById('score');
+        const resultsDisplay = document.getElementById('results');
+
+        function init() {
+            userAnswers = new Array(sentences.length).fill(null);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            sentenceNumber.value = currentIndex + 1;
+            const s = sentences[currentIndex];
+            
+            if (showTranslation) {
+                indicator.innerHTML = `<div style="color:#63a0d8;font-size:0.6em;">${s.translation}</div>`;
+            } else {
+                indicator.innerHTML = '';
+            }
+
+            const words = s.correctAnswer.match(/【(.*?)】/g).map(t => t.slice(1,-1));
+            const shuffled = shuffleArray(words);
+
+            optionsPool.innerHTML = '';
+            indicator2.innerHTML = '';
+            indicator2.className = '';
+            selectedWords = [];
+            isChecking = false;
+
+            shuffled.forEach(word => {
+                const btn = document.createElement('div');
+                btn.className = 'word-btn';
+                btn.textContent = word;
+                btn.onclick = () => selectWord(word, btn);
+                optionsPool.appendChild(btn);
+            });
+
+            document.getElementById('prevBtn').classList.toggle('disabled', !isFreeMode && currentIndex === 0);
+        }
+
+        function selectWord(word, btn) {
+            if (btn.classList.contains('used')) {
+                const idx = selectedWords.indexOf(word);
+                if (idx > -1) {
+                    selectedWords.splice(idx, 1);
+                    btn.classList.remove('used');
+                    renderAnswerArea();
+                }
+                return;
+            }
+
+            selectedWords.push(word);
+            btn.classList.add('used');
+            renderAnswerArea();
+
+            indicator2.classList.remove('correct', 'wrong');
+            
+            if (selectedWords.length === getCorrectWords().length && !isChecking) {
+                isChecking = true;
+                setTimeout(checkAnswer, 400);
+            }
+        }
+
+        function renderAnswerArea() {
+            indicator2.innerHTML = '';
+            selectedWords.forEach((word, i) => {
+                const btn = document.createElement('div');
+                btn.className = 'word-btn word-btn-in-answer';
+                btn.textContent = word;
+                btn.onclick = () => {
+                    selectedWords.splice(i, 1);
+                    renderAnswerArea();
+                    Array.from(optionsPool.children).find(b => b.textContent === word)?.classList.remove('used');
+                    isChecking = false;
+                    indicator2.classList.remove('correct', 'wrong');
+                };
+                indicator2.appendChild(btn);
+            });
+        }
+
+        function getCorrectWords() {
+            return sentences[currentIndex].correctAnswer.match(/【(.*?)】/g).map(t => t.slice(1,-1));
+        }
+
+        function getCorrectAnswerWithSpaces() {
+            const words = getCorrectWords();
+            return words.join(' ');
+        }
+
+        function checkAnswer() {
+            const userStr = selectedWords.join('');
+            const correctStr = getCorrectWords().join('');
+            const isCorrect = userStr === correctStr;
+
+            if (!isFreeMode && userAnswers[currentIndex] === null) {
+                userAnswers[currentIndex] = selectedWords.join(' ');
+                if (isCorrect) correctCount++;
+                updateScore();
+            }
+
+            if (isCorrect) {
+                indicator2.classList.add('correct');
+                indicator2.classList.remove('wrong');
+                correctAudio.play();
+                playOriginalSentenceExactly();
+            } else {
+                indicator2.classList.add('wrong');
+                wrongAudio.play();
+                
+                // Trong chế độ 作业模式, phát âm thanh ngay cả khi sai
+                if (!isFreeMode) {
+                    playOriginalSentenceExactly();
+                }
+            }
+
+            const delay = 1200;
+            
+            const moveToNextSentence = () => {
+                if (isFreeMode) {
+                    if (autoContinue && isCorrect) {
+                        nextSentence();
+                    }
+                } else {
+                    if (currentIndex < sentences.length - 1) {
+                        currentIndex++;
+                        updateDisplay();
+                    } else {
+                        showFinalResults();
+                    }
+                }
+            };
+            
+            setTimeout(() => {
+                if (!isAudioPlaying) {
+                    moveToNextSentence();
+                } else {
+                    const checkAudioEnd = setInterval(() => {
+                        if (!isAudioPlaying) {
+                            clearInterval(checkAudioEnd);
+                            moveToNextSentence();
+                        }
+                    }, 100);
+                }
+            }, delay);
+        }
+
+        function playOriginalSentenceExactly() {
+            const s = sentences[currentIndex];
+            audio.src = s.audioFile;
+            audio.currentTime = s.start;
+            isAudioPlaying = true;
+            audio.play();
+
+            const stopAtEnd = () => {
+                if (audio.currentTime >= s.end) {
+                    audio.pause();
+                    isAudioPlaying = false;
+                    audio.removeEventListener('timeupdate', stopAtEnd);
+                }
+            };
+            audio.addEventListener('timeupdate', stopAtEnd);
+            
+            audio.addEventListener('ended', () => {
+                isAudioPlaying = false;
+            });
+        }
+
+        document.getElementById('replayBtn').onclick = playOriginalSentenceExactly;
+
+        function showFinalResults() {
+            let text = `练习完成！\n正确：${correctCount}/${sentences.length}（${(correctCount/sentences.length*100).toFixed(1)}%）\n\n`;
+            
+            let hasWrong = false;
+            let wrongQuestionsText = "错题回顾：\n";
+            
+            for (let i = 0; i < sentences.length; i++) {
+                const correctWords = getCorrectWordsFromSentence(sentences[i]);
+                const correctAnswerWithSpaces = correctWords.join(' ');
+                
+                if (userAnswers[i] && userAnswers[i] !== correctAnswerWithSpaces) {
+                    hasWrong = true;
+                    wrongQuestionsText += `${i+1}. ${sentences[i].translation}\n   你的答案: ${userAnswers[i]}\n   正确答案: ${correctAnswerWithSpaces}\n\n`;
+                }
+            }
+            
+            if (hasWrong) {
+                text += wrongQuestionsText;
+            } else {
+                text += "全对！太厉害了！";
+            }
+            
+            resultsDisplay.textContent = text;
+            resultsDisplay.style.display = 'block';
+            scoreDisplay.style.display = 'none';
+        }
+
+        function getCorrectWordsFromSentence(sentence) {
+            return sentence.correctAnswer.match(/【(.*?)】/g).map(t => t.slice(1,-1));
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = `${correctCount}/${sentences.length}`;
+        }
+
+        function nextSentence() {
+            if (currentIndex < sentences.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            } else if (isFreeMode) {
+                currentIndex = 0;
+                updateDisplay();
+            }
+        }
+
+        function prevSentence() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateDisplay();
+            } else if (isFreeMode) {
+                currentIndex = sentences.length - 1;
+                updateDisplay();
+            }
+        }
+
+        function shuffleArray(a) {
+            const arr = [...a];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        document.getElementById('freeModeBtn').onclick = () => {
+            isFreeMode = true;
+            document.getElementById('freeModeBtn').classList.add('active-mode');
+            document.getElementById('testModeBtn').classList.remove('active-mode');
+            scoreDisplay.style.display = 'none';
+            resultsDisplay.style.display = 'none';
+            updateDisplay();
+        };
+
+        document.getElementById('testModeBtn').onclick = () => {
+            isFreeMode = false;
+            document.getElementById('testModeBtn').classList.add('active-mode');
+            document.getElementById('freeModeBtn').classList.remove('active-mode');
+            scoreDisplay.style.display = 'block';
+            resultsDisplay.style.display = 'none';
+            currentIndex = 0;
+            correctCount = 0;
+            userAnswers = new Array(sentences.length).fill(null);
+            updateDisplay();
+        };
+
+        document.getElementById('prevBtn').onclick = () => {
+            if (isFreeMode) {
+                prevSentence();
+            } else if (currentIndex > 0) {
+                currentIndex--;
+                updateDisplay();
+            }
+        };
+        
+        document.getElementById('nextBtn').onclick = () => {
+            if (isFreeMode) {
+                nextSentence();
+            } else if (currentIndex < sentences.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            }
+        };
+
+        document.getElementById('autoContinueBtn').onclick = () => {
+            autoContinue = !autoContinue;
+            document.getElementById('autoContinueBtn').classList.toggle('active-mode', autoContinue);
+        };
+
+        document.getElementById('showHideBtn').onclick = () => {
+            showTranslation = !showTranslation;
+            document.getElementById('showHideBtn').classList.toggle('active-mode', showTranslation);
+            updateDisplay();
+        };
+
+        sentenceNumber.onchange = () => {
+            if (isFreeMode) {
+                const n = parseInt(sentenceNumber.value) - 1;
+                if (n >= 0 && n < sentences.length) { 
+                    currentIndex = n; 
+                    updateDisplay(); 
+                }
+            }
+        };
+
+        init();
+    </script>
+</body>
+</html>
